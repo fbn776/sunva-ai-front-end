@@ -2,7 +2,7 @@
 import "./login.css";
 import {useState} from "react";
 import {toast} from "sonner";
-import {StateSetter, TPages} from "@/app/lib/types";
+import {StateSetter, TPages} from "@/lib/types";
 
 function HideEye() {
     return <svg xmlns="http://www.w3.org/2000/svg" width="23" height="23" fill="#000000" viewBox="0 0 256 256">

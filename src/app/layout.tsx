@@ -1,6 +1,6 @@
 import type {Metadata} from "next";
 import "./globals.css";
-import {inter} from "@/app/lib/font";
+import {inter} from "@/lib/font";
 import {Toaster} from "@/components/ui/sonner";
 
 

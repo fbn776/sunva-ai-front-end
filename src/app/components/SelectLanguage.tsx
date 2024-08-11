@@ -8,7 +8,7 @@ import {
     SelectValue,
 } from "@/components/ui/select"
 import {useState} from "react";
-import {StateSetter, TPages} from "@/app/lib/types";
+import {StateSetter, TPages} from "@/lib/types";
 
 
 

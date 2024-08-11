@@ -1,4 +1,4 @@
-import {TMessage} from "@/app/lib/types";
+import {TMessage} from "@/lib/types";
 import {memo, useEffect, useState} from "react";
 
 function Message({item} : {item: TMessage}) {

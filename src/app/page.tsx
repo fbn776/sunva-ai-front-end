@@ -4,7 +4,7 @@ import {useState} from "react";
 import Login from "@/app/components/Login";
 import SelectLanguage from "@/app/components/SelectLanguage";
 import TextSize from "@/app/components/TextSize";
-import {StateSetter, TPages} from "@/app/lib/types";
+import {StateSetter, TPages} from "@/lib/types";
 
 
 function ShowPage({currPage, pageSetter}: {currPage: TPages, pageSetter: StateSetter<TPages>}) {

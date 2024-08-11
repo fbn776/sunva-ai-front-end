@@ -2,7 +2,7 @@
 
 import "./home.css"
 import {
-    Icons,
+    NoteIcon,
     KeyboardIcon,
     MicroPhoneIcon,
     SettingsIcon,
@@ -12,18 +12,9 @@ import {
 } from "@/app/components/Icons";
 import {useState} from "react";
 import MessagesList from "@/app/components/MessageList";
-import {TMessage} from "@/app/lib/types";
-import {
-    AlertDialog,
-    AlertDialogAction,
-    AlertDialogCancel,
-    AlertDialogContent,
-    AlertDialogFooter,
-    AlertDialogHeader,
-    AlertDialogTitle,
-    AlertDialogTrigger,
-} from "@/components/ui/alert-dialog"
-
+import {TMessage} from "@/lib/types";
+import {Dialog} from "@/app/components/Alerts";
+import Link from "next/link";
 
 
 export default function Home() {
@@ -44,19 +35,21 @@ export default function Home() {
             message: "I’m available at that time. Let’s meet then."
         }
     ]);
+    const [isDelOpen, setIsDelOpen] = useState(false);
+    const [isSaveOpen, setIsSaveOpen] = useState(false);
 
 
-    return <main className="flex justify-between flex-col w-full h-full px-4 pt-3 pb-4">
+    return <main className="accessibility flex justify-between flex-col w-full h-full px-4 pt-3 pb-4">
         <div className="w-full h-[40px] flex items-center">
-            <button className="w-[24px]">
-                <Icons/>
-            </button>
+            <Link href="/home/saved" className="w-[24px]">
+                <NoteIcon/>
+            </Link>
             <div className="text-center w-[calc(100%-48px)]">English</div>
         </div>
         <MessagesList messages={messages}/>
         <div className="px-5 h-[75px] py-1 bg-white shadow flex rounded-3xl gap-7 justify-evenly items-center">
             <SettingsIcon/>
-            <DeleteChat/>
+            <button onClick={() => setIsDelOpen(true)}><TrashIcon/></button>
             <button
                 className={`h-[65%] aspect-square rounded-full flex items-center justify-center record-btn ${isRecording ? 'recording' : ''}`}
                 onClick={() => {
@@ -68,22 +61,29 @@ export default function Home() {
             <KeyboardIcon/>
             <UpAndDownArrow/>
         </div>
+
+        <Dialog
+            title="Do you want to save this conversation?"
+            acceptText="Save"
+            rejectText="Cancel"
+            open={isDelOpen}
+            setOpen={setIsDelOpen}
+            onAccept={() => {
+                setIsDelOpen(false);
+                setIsSaveOpen(true);
+            }}
+        >
+            <br/>
+        </Dialog>
+
+        <Dialog
+            title="Save As"
+            acceptText="Save"
+            rejectText="Cancel"
+            open={isSaveOpen}
+            setOpen={setIsSaveOpen}
+        >
+            <input type="text" className="my-5 w-full px-2 py-2 rounded-xl border-2 border-brand-secondary" placeholder="Enter here"/>
+        </Dialog>
     </main>
-}
-
-function DeleteChat() {
-    return <AlertDialog>
-        <AlertDialogTrigger><TrashIcon/></AlertDialogTrigger>
-
-        <AlertDialogContent className="w-[80%] rounded-lg">
-            <AlertDialogHeader>
-                <AlertDialogTitle className="">Do you want to save this conversation?</AlertDialogTitle>
-            </AlertDialogHeader>
-            <AlertDialogFooter className="flex w-full flex-row items-center justify-end gap-4">
-                <AlertDialogCancel className="bg-transparent w-fit h-fit">Cancel</AlertDialogCancel>
-                <AlertDialogAction className="bg-[#00956b] w-fit h-fit">Save</AlertDialogAction>
-            </AlertDialogFooter>
-        </AlertDialogContent>
-    </AlertDialog>
-
 }
