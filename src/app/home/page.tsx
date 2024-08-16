@@ -10,21 +10,22 @@ import {
     TrashIcon,
     UpAndDownArrow
 } from "@/app/components/Icons";
-import {useState} from "react";
+import {useRef, useState} from "react";
 import MessagesList from "@/app/components/MessageList";
 import {Dialog} from "@/app/components/Alerts";
 import Link from "next/link";
 import {useSunvaAI} from "@/app/home/useSunvaAI";
+import {toast} from "sonner";
 
-const BACKEND = "localhost:8000";
 
+const STORE_NAME = "sunva-ai_msg:";
 
 export default function Home() {
     const [isRecording, setIsRecording] = useState(false);
     const [isDelOpen, setIsDelOpen] = useState(false);
     const [isSaveOpen, setIsSaveOpen] = useState(false);
     const [messages, handleRecord] = useSunvaAI();
-
+    const saveNameRef = useRef<HTMLInputElement>(null);
 
     return <main className="accessibility flex justify-between flex-col w-full h-full px-4 pt-3 pb-4">
         <div className="w-full h-[40px] flex items-center">
@@ -70,8 +71,17 @@ export default function Home() {
             rejectText="Cancel"
             open={isSaveOpen}
             setOpen={setIsSaveOpen}
+            onAccept={() => {
+                if (!saveNameRef.current?.value) {
+                    toast.error("Please enter a name");
+                } else {
+                    let msg_data = JSON.stringify(messages);
+                    localStorage.setItem(STORE_NAME + saveNameRef.current.value, msg_data);
+                }
+            }}
         >
-            <input type="text" className="my-5 w-full px-2 py-2 rounded-xl border-2 border-brand-secondary"
+            <input type="text" ref={saveNameRef}
+                   className="my-5 w-full px-2 py-2 rounded-xl border-2 border-brand-secondary"
                    placeholder="Enter here"/>
         </Dialog>
     </main>
