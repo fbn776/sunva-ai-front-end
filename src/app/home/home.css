@@ -27,6 +27,14 @@
     @apply p-4 rounded-xl overflow-hidden h-fit;
 }
 
+.message-box:nth-child(odd) {
+    @apply message-1;
+}
+
+.message-box:nth-child(even) {
+    @apply message-2;
+}
+
 .message-box p {
     overflow: auto; /* or visible */
     text-overflow: ellipsis; /* optional for truncating long text */

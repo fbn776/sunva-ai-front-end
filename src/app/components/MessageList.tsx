@@ -1,9 +1,8 @@
 import {TMessage} from "@/lib/types";
-import {memo, useEffect, useState} from "react";
+import {memo, useEffect, useRef, useState} from "react";
 
 function Message({item} : {item: TMessage}) {
     const [showOriginal, setShowOriginal] = useState(true);
-    let msgStyle = item.name === "Person 1" ? "message-1" : "message-2";
 
     useEffect(() => {
         if(item.summarized)
@@ -12,7 +11,7 @@ function Message({item} : {item: TMessage}) {
 
     return <>
         <div
-            className={`${msgStyle} ${showOriginal ? '' : 'summarize'} message-box`}
+            className={` ${showOriginal ? '' : 'summarize'} message-box`}
         >
             <label className={`font-bold block`}>{item.name}</label>
             <p className="h-auto">
@@ -31,12 +30,24 @@ function Message({item} : {item: TMessage}) {
     </>
 }
 
+
 function MessagesList({messages}: { messages: TMessage[] }) {
-    return <section className="w-full flex-1 rounded-lg pt-2 gap-2 overflow-y-scroll hide-scrollbar space-y-4 pb-5">
-        {
-            messages.map((item, i) => <Message item={item} key={i}/>)
+    const section = useRef<HTMLDivElement>(null);
+    useEffect(() => {
+        let elements = section.current?.getElementsByClassName("message-box") || [];
+        console.log(elements)
+        if(elements.length > 0) {
+            elements[elements.length - 1].scrollIntoView();
         }
-    </section>;
+    }, [messages]);
+
+    return <div ref={section} className="w-full flex-1 rounded-lg pt-2 gap-2 overflow-y-scroll hide-scrollbar space-y-4 pb-5">
+        {
+            messages.map((item, i) => {
+                return <Message item={item} key={i}/>
+            })
+        }
+    </div>;
 }
 
 export default memo(MessagesList);
