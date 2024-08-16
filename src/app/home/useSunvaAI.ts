@@ -65,7 +65,6 @@ async function sendAudioChunks() {
     }
 }
 
-
 function startTranscriptionAndProcessing(setMessages: StateSetter<TMessage[]>) {
     transcribeAndProcessSocket = new WebSocket("ws://localhost:8000/v1/ws/transcription");
 
@@ -75,14 +74,15 @@ function startTranscriptionAndProcessing(setMessages: StateSetter<TMessage[]>) {
     };
 
     transcribeAndProcessSocket.onmessage = (event) => {
-        const data = JSON.parse(event.data);
+        const data = JSON.parse(event.data) as { transcription: string, processed_text: string };
         console.log(data);
+        if (data.transcription)
+            setMessages(prevState => [...prevState, {
+                name: "Person 1",
+                message: data.transcription,
+                summarized: data.processed_text || ''
+            }]);
 
-        setMessages(prevState => [...prevState, {
-            name: "Person 1",
-            message: data.transcription || '',
-            summarized: data.processed_text || ''
-        }]);
     };
 
     transcribeAndProcessSocket.onclose = () => {
@@ -100,22 +100,7 @@ function stopTranscriptionAndProcessing() {
 
 
 export function useSunvaAI() {
-    const [messages, setMessages] = useState<TMessage[]>([
-        {
-            name: "Person 1",
-            message: "Hi Harshita, We are looking to redesign our mobile app. Can you help us with that?"
-        }, {
-            name: "Person 2",
-            message: "Absolutely. I'd love to help. What specific changes are you looking to make?"
-        }, {
-            name: "Person 1",
-            message: "They want to improve user flow and address navigation issues. They’re proposing a meeting this Friday at 10 AM.",
-            summarized: "We want to improve the user flow and make the interface more intuitive. Users have been complaining about navigation issues. Can we have a meeting  this Friday at 10 AM?"
-        }, {
-            name: "Person 2",
-            message: "I’m available at that time. Let’s meet then."
-        }
-    ]);
+    const [messages, setMessages] = useState<TMessage[]>([]);
 
     function handleRecord(isRecording: boolean) {
         if (isRecording) {

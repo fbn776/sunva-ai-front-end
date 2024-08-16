@@ -1,11 +1,11 @@
 import {TMessage} from "@/lib/types";
 import {memo, useEffect, useRef, useState} from "react";
 
-function Message({item} : {item: TMessage}) {
+function Message({item}: { item: TMessage }) {
     const [showOriginal, setShowOriginal] = useState(true);
 
     useEffect(() => {
-        if(item.summarized)
+        if (item.summarized)
             setShowOriginal(false);
     }, [item.summarized]);
 
@@ -15,7 +15,10 @@ function Message({item} : {item: TMessage}) {
         >
             <label className={`font-bold block`}>{item.name}</label>
             <p className="h-auto">
-                {showOriginal ? item.message : item.summarized || item.message}
+                {item.summarized ?
+                    (showOriginal ? item.summarized : item.message) :
+                    item.message
+                }
             </p>
         </div>
         {item.summarized &&
@@ -34,18 +37,19 @@ function Message({item} : {item: TMessage}) {
 function MessagesList({messages}: { messages: TMessage[] }) {
     const section = useRef<HTMLDivElement>(null);
     useEffect(() => {
-        let elements = section.current?.getElementsByClassName("message-box") || [];
-        console.log(elements)
-        if(elements.length > 0) {
-            elements[elements.length - 1].scrollIntoView();
-        }
+        section.current?.scrollTo(0, section.current.scrollHeight);
     }, [messages]);
 
-    return <div ref={section} className="w-full flex-1 rounded-lg pt-2 gap-2 overflow-y-scroll hide-scrollbar space-y-4 pb-5">
+    return <div ref={section}
+                className="w-full flex-1 rounded-lg pt-2 gap-2 overflow-y-scroll hide-scrollbar space-y-4 pb-5"
+    >
         {
-            messages.map((item, i) => {
-                return <Message item={item} key={i}/>
-            })
+            messages.length === 0 ? <p className="text-center opacity-30 text-2xl mt-40">Start a conversation</p> :
+                <>
+                    {messages.map((item, i) => {
+                        return <Message item={item} key={i}/>
+                    })}
+                </>
         }
     </div>;
 }
